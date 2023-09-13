@@ -8,4 +8,4 @@ export const Header = () => {
   return <header style={headerStyle}>Yes, this is a dog.</header>
 }
 
-//export default Header
+
