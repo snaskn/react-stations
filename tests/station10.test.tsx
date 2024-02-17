@@ -27,23 +27,49 @@ describe('<BreedsSelect />', () => {
       '../src/BreedsSelect'
     )) as IBreedsSelect
     const res = await render(<BreedsSelect breeds={breeds} />)
-    expect(res.container.querySelectorAll('select').length).not.toBe(0)
-    expect(res.container.querySelectorAll('option').length).not.toBe(0)
+
+    // NOTE: 非同期処理等でselectおよびoptionタグが存在しない場合があるため、waitForを使用する
+    await waitFor(() => {
+      expect(res.container.querySelectorAll('select').length).not.toBe(0)
+      expect(res.container.querySelectorAll('option').length).not.toBe(0)
+    })
   })
 })
 
 describe('<App />', () => {
-  it('value changes when `onChange` wes called', async () => {
+  it('value changes when `onChange` was called', async () => {
     const { App } = await import('../src/App')
     const res = await render(<App />)
-    const selectTag = res.container.querySelector('select')!
-    const value = 'test'
 
-    expect(selectTag).toBeTruthy()
-    await fireEvent.change(selectTag, { target: { value } })
+    // NOTE: 非同期処理等でselectおよびoptionタグが存在しない場合があるため、waitForを使用する
+    const selectTag = await waitFor(
+      () => res.container.querySelector('select')!,
+    )
+    const optionTags = await waitFor(() => {
+      const options = res.container.querySelectorAll('option')
+      if (options.length === 0) {
+        throw new Error('optionタグが存在しません')
+      } else if (options.length === 1 && options[0].value === '') {
+        throw new Error('有効な選択肢が存在しません')
+      }
 
+      return options
+    })
+
+    // NOTE: 1つ目の選択肢がplaceholder (value="")の場合があることの考慮
+    const selectedOptionValue = optionTags[0]?.value || optionTags[1]?.value
+
+    expect(selectTag, 'select tagが存在すること').toBeTruthy()
+    expect(optionTags, 'option tagが存在すること').toBeTruthy()
+
+    await fireEvent.change(selectTag, {
+      target: { value: selectedOptionValue },
+    })
     await waitFor(() => {
-      expect(selectTag.value).toBe(value)
+      expect(
+        selectTag.value,
+        'optionタグにおいて特定のタグが選択されている状態にできること',
+      ).toBe(selectedOptionValue)
     })
   })
 })
