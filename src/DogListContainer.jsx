@@ -1,5 +1,5 @@
 // @ts-check
-
+import { BreedsSelect } from './BreedsSelect.jsx'
 import { useEffect, useState } from 'react'
 
 export const DogListContainer = () => {
