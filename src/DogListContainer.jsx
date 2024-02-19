@@ -3,10 +3,9 @@ import { BreedsSelect } from './BreedsSelect.jsx'
 import { DogImage } from './DogImage.jsx'
 import { useEffect, useState } from 'react'
 
-
 export const DogListContainer = () => {
   const [breeds, setBreeds] = useState([''])
-  const [selectedBreed, setSelectedBreed] = useState('')  
+  const [selectedBreed, setSelectedBreed] = useState('')
   const [breedsPics, setBreedsPics] = useState([''])
 
   useEffect(() => {
@@ -26,7 +25,7 @@ export const DogListContainer = () => {
   // }, [selectedBreed]);
 
   const fetchAPI = () => {
-    if (!selectedBreed) return;
+    if (!selectedBreed) return
     fetch(`https://dog.ceo/api/breed/${selectedBreed}/images/random/12`)
       .then(response => response.json())
       .then(data => {
@@ -36,16 +35,16 @@ export const DogListContainer = () => {
 
   return (
     <div>
-      <BreedsSelect 
-        breeds={breeds} 
-        selectedBreed={selectedBreed} 
+      <BreedsSelect
+        breeds={breeds}
+        selectedBreed={selectedBreed}
         handleSelectedChange={handleSelectedChange}
       />
       <button onClick={() => setBreedsPics([])}>リセット</button>
       <button onClick={fetchAPI}>表示</button>
       {breedsPics.map((url, index) => (
-          <DogImage key={index} imageUrl={url}/>
-        ))}
+        <DogImage key={index} imageUrl={url} />
+      ))}
     </div>
   )
 }
