@@ -19,7 +19,7 @@ export const Description = () => {
     <div>
       <DogImage imageUrl={dogUrl} />
       <p>
-        <button onClick={fetchAPI}>Change dog</button>
+        <button onClick={fetchAPI}>次の犬</button>
       </p>
     </div>
   )
